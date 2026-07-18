@@ -121,18 +121,16 @@ function updateSecretsTab() {
 function openTab(event, tabId) {
     const gateContainer = document.getElementById('gate-container');
 
-    // STEP 1: Slam the mechanical gates shut instantly
+    // STEP 1: Trigger the full mechanical sequence
     gateContainer.className = 'gate-shut';
 
-    // Wait 150ms for gates to look shut, then swap active layouts underneath
+    // Wait exactly 300ms for the gates to be fully closed, then swap active layouts underneath
     setTimeout(() => {
-        // Swap active tab layouts
         const tabs = document.querySelectorAll('.tab-content');
         tabs.forEach(tab => {
             tab.classList.remove('active-tab');
         });
 
-        // Swap active state on navbar links
         const tabLinks = document.querySelectorAll('.tab-link');
         tabLinks.forEach(link => {
             link.classList.remove('active');
@@ -141,13 +139,14 @@ function openTab(event, tabId) {
         document.getElementById(tabId).classList.add('active-tab');
         event.currentTarget.classList.add('active');
 
-    }, 150);
+    }, 300); // 300ms matches the "Hold solid" phase in the CSS
 
-    // STEP 3: Slide the heavy doors open smoothly
+    // STEP 3: Reset the gate classes after the 700ms animation completely finishes
     setTimeout(() => {
         gateContainer.className = 'gate-open';
-    }, 450);
+    }, 700); 
 }
+
 
 // Load progress on page load
 window.onload = function () {
