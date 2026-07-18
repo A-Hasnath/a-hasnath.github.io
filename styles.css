@@ -187,84 +187,86 @@ input[type="text"]:focus {
 }
 
 /* ==========================================================================
-   Premium Clean Industrial Blast Gates (No Shake, No Color Glitch)
+   Blast Gate Transitions
    ========================================================================== */
 
+/* The wrapper that sits completely on top of everything */
 #gate-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 10000;
-    pointer-events: none;
+    z-index: 10000; /* Keeps it above tabs, buttons, and text */
+    pointer-events: none; /* Allows clicks to pass through when hidden */
     display: flex;
-    overflow: hidden;
 }
 
-/* Heavy metallic structural panels using your exact plum color */
+/* Base styling for both halves of the security gate */
 .gate-half {
-    position: absolute;
-    top: 0;
     width: 50vw;
     height: 100vh;
-    background-color: #642b53; /* Your target plum color */
+    background-color: #121216;
+    border: 4px solid #622A50; /* Uses your signature deep purple */
     box-sizing: border-box;
-    /* Clean inner shadow to give it 3D metallic bevel edges */
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
-/* Smooth left door setup */
 .left-gate {
-    left: 0;
     transform: translateX(-100%);
-    border-right: 3px solid #bc3a80; /* Clean, solid accent line */
+    border-right: 2px dashed #bc3a80; /* Neon seam where they lock */
 }
 
-/* Smooth right door setup */
 .right-gate {
-    right: 0;
     transform: translateX(100%);
-    border-left: 3px solid #bc3a80; /* Clean, solid accent line */
+    border-left: 2px dashed #bc3a80;
+}
+
+/* The structural crack effect down the center */
+.gate-crack {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 100vh;
+    background: transparent;
+    pointer-events: none;
+    z-index: 10001;
 }
 
 /* ==========================================================================
-   Realistic Mechanical Impact Timing (No Shake / No Color Shifts)
+   Gate Animation States
    ========================================================================== */
 
-/* Realistic slamming motion: accelerates fast, hits, and settles with a minor rebound bounce */
-@keyframes mechanicalSlamLeft {
-    0% { transform: translateX(-100%); }
-    70% { transform: translateX(0); }
-    85% { transform: translateX(-8px); } /* Subtle mechanical recoil bounce */
-    100% { transform: translateX(0); }
+/* State 1: When the gate slams shut instantly */
+#gate-container.gate-shut {
+    pointer-events: all; /* Blocks user inputs during transition */
 }
-
-@keyframes mechanicalSlamRight {
-    0% { transform: translateX(100%); }
-    70% { transform: translateX(0); }
-    85% { transform: translateX(8px); } /* Subtle mechanical recoil bounce */
-    100% { transform: translateX(0); }
-}
-
-/* State: Slamming closed smoothly */
-#gate-container.gate-shut .left-gate {
-    animation: mechanicalSlamLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
+#gate-container.gate-shut .left-gate,
 #gate-container.gate-shut .right-gate {
-    animation: mechanicalSlamRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transform: translateX(0);
 }
 
-/* State: Smoothly sliding wide open sideways */
+/* State 2: Trigger the energy crack down the center seam */
+@keyframes crackFlash {
+    0%, 100% { background: transparent; box-shadow: none; }
+    20%, 60% { background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 30px #622A50; }
+    40% { background: #fff; box-shadow: 0 0 25px #fff, 0 0 40px #bc3a80; }
+}
+
+#gate-container.gate-cracking .gate-crack {
+    animation: crackFlash 0.3s steps(3) forwards;
+}
+
+/* State 3: When the shattered gate slides wide open */
 #gate-container.gate-open .left-gate {
     transform: translateX(-100%);
-    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
 #gate-container.gate-open .right-gate {
     transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
+
 
 
 
