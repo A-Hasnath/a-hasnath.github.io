@@ -30,7 +30,16 @@ const tasks = {
             return answer === '0'; 
         }
     }
+    4: {
+        description: "Whats the blood again",
+        reward: 20,
+        message: "What is the liquid variable? (Enter group):",
+        validate: function (answer) {
+            return answer === 'o'; 
+        }
+    }
 };
+
 
 // Custom graphic dialog controller using modern Promises
 function showCustomPrompt(messageText) {
