@@ -185,125 +185,119 @@ input[type="text"]:focus {
     background-color: #161622;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 204, 0.3);
 }
+
 /* ==========================================================================
-   Blast Gate Transitions
+   Zigzag Blast Gate Transitions (Interlocking Seam)
    ========================================================================== */
 
-/* The wrapper that sits completely on top of everything */
 #gate-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 10000; /* Keeps it above tabs, buttons, and text */
-    pointer-events: none; /* Allows clicks to pass through when hidden */
+    z-index: 10000;
+    pointer-events: none;
     display: flex;
 }
 
-/* Base styling for both halves of the security gate */
+/* Base gate panels - Set to your exact target purple swatch hue */
 .gate-half {
-    width: 50vw;
+    position: absolute;
+    top: 0;
+    width: 60vw; /* Slight overlap to ensure the teeth interlock tightly */
     height: 100vh;
-    background-color: #121216;
-    border: 4px solid #622A50; /* Uses your signature deep purple */
+    background-color: #642b53; /* Your exact deep plum/magenta color */
     box-sizing: border-box;
     transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+/* LEFT GATE: Cuts outward to form teeth, slides to the left */
 .left-gate {
+    left: 0;
     transform: translateX(-100%);
-    border-right: 2px dashed #bc3a80; /* Neon seam where they lock */
+    /* Creates the zigzag profile on the right edge */
+    clip-path: polygon(0% 0%, 83.33% 0%, 66.67% 20%, 83.33% 40%, 66.67% 60%, 83.33% 80%, 66.67% 100%, 0% 100%);
+    border-right: 4px solid #bc3a80;
 }
 
+/* RIGHT GATE: Cuts inward to receive the teeth, slides to the right */
 .right-gate {
+    right: 0;
     transform: translateX(100%);
-    border-left: 2px dashed #bc3a80;
+    /* Mirrors the exact zigzag profile on the left edge to fit perfectly */
+    clip-path: polygon(16.67% 0%, 100% 0%, 100% 100%, 16.67% 100%, 33.33% 80%, 16.67% 60%, 33.33% 40%, 16.67% 20%);
+    border-left: 4px solid #bc3a80;
 }
 
-/* The structural crack effect down the center */
+/* ==========================================================================
+   Gate Animation States & Distortion Glitch Effects
+   ========================================================================== */
+
+/* The digital screen-tear/distortion effect when opening and closing */
+@keyframes gateDistort {
+    0% {
+        filter: hue-rotate(0deg) contrast(1) skewX(0deg);
+        transform: scale(1);
+    }
+    20% {
+        filter: hue-rotate(-30deg) contrast(1.5) skewX(3deg);
+        transform: scaleY(1.02);
+    }
+    50% {
+        filter: hue-rotate(45deg) brightness(1.4) skewX(-3deg);
+    }
+    75% {
+        filter: hue-rotate(-15deg) contrast(1.2) skewX(1deg);
+    }
+    100% {
+        filter: hue-rotate(0deg) contrast(1) skewX(0deg);
+        transform: scale(1);
+    }
+}
+
+/* State 1: Slamming Shut instantly */
+#gate-container.gate-shut {
+    pointer-events: all;
+}
+#gate-container.gate-shut .left-gate,
+#gate-container.gate-shut .right-gate {
+    transform: translateX(0);
+    /* Triggers blocky visual distortion right as they impact */
+    animation: gateDistort 0.3s steps(3) forwards; 
+}
+
+/* State 2: Neon energy seam flare right down the zigzag line */
 .gate-crack {
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 8px;
+    width: 100vw;
     height: 100vh;
-    background: transparent;
     pointer-events: none;
     z-index: 10001;
+    mix-blend-mode: overlay;
 }
 
-/* ==========================================================================
-   Gate Animation States
-   ========================================================================== */
-
-/* State 1: When the gate slams shut instantly */
-#gate-container.gate-shut {
-    pointer-events: all; /* Blocks user inputs during transition */
-}
-#gate-container.gate-shut .left-gate,
-#gate-container.gate-shut .right-gate {
-    transform: translateX(0);
-}
-
-/* State 2: Trigger the energy crack down the center seam */
-@keyframes crackFlash {
-    0%, 100% { background: transparent; box-shadow: none; }
-    20%, 60% { background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 30px #622A50; }
-    40% { background: #fff; box-shadow: 0 0 25px #fff, 0 0 40px #bc3a80; }
+@keyframes lightningCrack {
+    0%, 100% { background: transparent; }
+    30%, 70% { background: rgba(0, 255, 204, 0.4); filter: drop-shadow(0 0 15px #00ffcc); }
+    50% { background: rgba(255, 255, 255, 0.6); filter: drop-shadow(0 0 25px #fff); }
 }
 
 #gate-container.gate-cracking .gate-crack {
-    animation: crackFlash 0.3s steps(3) forwards;
+    animation: lightningCrack 0.25s steps(2) forwards;
 }
 
-/* State 3: When the shattered gate slides wide open */
+/* State 3: Shattering Open and pulling back out of frame */
 #gate-container.gate-open .left-gate {
     transform: translateX(-100%);
+    animation: gateDistort 0.3s steps(3) reverse; /* Re-apply distortion while pulling away */
 }
 #gate-container.gate-open .right-gate {
     transform: translateX(100%);
+    animation: gateDistort 0.3s steps(3) reverse;
 }
 
-/* Glitch Animation Keyframes - Slowed down and intensified */
-@keyframes tabGlitch {
-    0% {
-        transform: translate(0);
-        filter: hue-rotate(0deg) contrast(1);
-    }
-    15% {
-        transform: translate(-8px, 4px);
-        filter: hue-rotate(90deg) contrast(1.8);
-        clip-path: inset(15% 0 60% 0);
-    }
-    30% {
-        transform: translate(8px, -4px);
-        filter: hue-rotate(180deg) brightness(1.8);
-        clip-path: inset(45% 0 20% 0); 
-    }
-    45% {
-        transform: translate(-5px, 6px);
-        filter: hue-rotate(270deg) contrast(1.4) saturate(2);
-        clip-path: inset(70% 0 5% 0);
-    }
-    60% {
-        transform: translate(6px, -2px);
-        filter: hue-rotate(360deg) brightness(1.2);
-        clip-path: inset(5% 0 80% 0);
-    }
-    75% {
-        transform: translate(-2px, 3px);
-        filter: hue-rotate(120deg) contrast(1.6);
-    }
-    100% {
-        transform: translate(0);
-        filter: hue-rotate(0deg) contrast(1);
-        clip-path: inset(0);
-    }
-}
-
-/* Updated trigger class: Changed to 0.6s and steps(4) */
-.glitch-active {
-    animation: tabGlitch 0.6s steps(4) cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+         
