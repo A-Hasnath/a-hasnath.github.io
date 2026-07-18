@@ -185,6 +185,86 @@ input[type="text"]:focus {
     background-color: #161622;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 204, 0.3);
 }
+/* ==========================================================================
+   Blast Gate Transitions
+   ========================================================================== */
+
+/* The wrapper that sits completely on top of everything */
+#gate-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000; /* Keeps it above tabs, buttons, and text */
+    pointer-events: none; /* Allows clicks to pass through when hidden */
+    display: flex;
+}
+
+/* Base styling for both halves of the security gate */
+.gate-half {
+    width: 50vw;
+    height: 100vh;
+    background-color: #121216;
+    border: 4px solid #622A50; /* Uses your signature deep purple */
+    box-sizing: border-box;
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.left-gate {
+    transform: translateX(-100%);
+    border-right: 2px dashed #bc3a80; /* Neon seam where they lock */
+}
+
+.right-gate {
+    transform: translateX(100%);
+    border-left: 2px dashed #bc3a80;
+}
+
+/* The structural crack effect down the center */
+.gate-crack {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 100vh;
+    background: transparent;
+    pointer-events: none;
+    z-index: 10001;
+}
+
+/* ==========================================================================
+   Gate Animation States
+   ========================================================================== */
+
+/* State 1: When the gate slams shut instantly */
+#gate-container.gate-shut {
+    pointer-events: all; /* Blocks user inputs during transition */
+}
+#gate-container.gate-shut .left-gate,
+#gate-container.gate-shut .right-gate {
+    transform: translateX(0);
+}
+
+/* State 2: Trigger the energy crack down the center seam */
+@keyframes crackFlash {
+    0%, 100% { background: transparent; box-shadow: none; }
+    20%, 60% { background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 30px #622A50; }
+    40% { background: #fff; box-shadow: 0 0 25px #fff, 0 0 40px #bc3a80; }
+}
+
+#gate-container.gate-cracking .gate-crack {
+    animation: crackFlash 0.3s steps(3) forwards;
+}
+
+/* State 3: When the shattered gate slides wide open */
+#gate-container.gate-open .left-gate {
+    transform: translateX(-100%);
+}
+#gate-container.gate-open .right-gate {
+    transform: translateX(100%);
+}
 
 /* Glitch Animation Keyframes - Slowed down and intensified */
 @keyframes tabGlitch {
