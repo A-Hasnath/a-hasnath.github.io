@@ -90,23 +90,31 @@ function completeTask(taskId) {
     saveProgress(); // Save progress after completing a task
 }
 
-// Tab switching logic
+// Tab switching logic with Glitch Effect
 function openTab(event, tabId) {
-    // Hide all tab content
+    // 1. Trigger the screen glitch animation on the body
+    document.body.classList.add('glitch-active');
+
+    // 2. Hide all tab content
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => {
         tab.classList.remove('active-tab');
     });
 
-    // Remove active class from all tab links
+    // 3. Remove active class from all tab links
     const tabLinks = document.querySelectorAll('.tab-link');
     tabLinks.forEach(link => {
         link.classList.remove('active');
     });
 
-    // Show the selected tab and make its link active
+    // 4. Show the selected tab and make its link active
     document.getElementById(tabId).classList.add('active-tab');
     event.currentTarget.classList.add('active');
+
+    // 5. Clean up the class after the 0.25s animation completes
+    setTimeout(() => {
+        document.body.classList.remove('glitch-active');
+    }, 250);
 }
 
 // Load progress on page load
