@@ -4,33 +4,70 @@ let balance = 0;
 const rewardHistoryList = document.getElementById('reward-history-list');
 const balanceElement = document.getElementById('balance');
 
-// Updated to map your story-driven questions precisely
+// Reconfigured tasks architecture using custom strings & modal parameters
 const tasks = {
     1: {
         description: "Prove that you are the saintess",
         reward: 10,
-        complete: function () {
-            const answer = prompt("Enter the hidden passcode of the order (Hint: saintess):");
+        message: "Enter the hidden passcode of the order (Hint: saintess):",
+        validate: function (answer) {
             return answer && answer.toLowerCase() === 'saintess';
         }
     },
     2: {
         description: "How is your temper",
         reward: 20,
-        complete: function () {
-            const answer = prompt("Are you calm, angry, or volatile?");
+        message: "Are you calm, angry, or volatile?",
+        validate: function (answer) {
             return answer && answer.toLowerCase() === 'calm';
         }
     },
     3: {
         description: "Whats the age difference again",
         reward: 30,
-        complete: function () {
-            const answer = prompt("What is the secret difference variable? (Enter a number):");
+        message: "What is the secret difference variable? (Enter a number):",
+        validate: function (answer) {
             return answer === '0'; 
         }
     }
 };
+
+// Custom graphic dialog controller using modern Promises
+function showCustomPrompt(messageText) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('custom-prompt-modal');
+        const msgContainer = document.getElementById('modal-message');
+        const inputField = document.getElementById('modal-input');
+        const submitBtn = document.getElementById('modal-submit-btn');
+        const cancelBtn = document.getElementById('modal-cancel-btn');
+
+        // Setup texts and reset fields
+        msgContainer.textContent = messageText;
+        inputField.value = '';
+        modal.style.display = 'flex';
+        inputField.focus();
+
+        // Event scoping handlers
+        function handleSubmit() {
+            cleanup();
+            resolve(inputField.value);
+        }
+
+        function handleCancel() {
+            cleanup();
+            resolve(null);
+        }
+
+        function cleanup() {
+            modal.style.display = 'none';
+            submitBtn.removeEventListener('click', handleSubmit);
+            cancelBtn.removeEventListener('click', handleCancel);
+        }
+
+        submitBtn.addEventListener('click', handleSubmit);
+        cancelBtn.addEventListener('click', handleCancel);
+    });
+}
 
 // Load progress from localStorage when the app loads
 function loadProgress() {
@@ -77,13 +114,9 @@ function clearProgress() {
 
 // Task completion logic
 function completeTask(taskId) {
-    const rewards = {
-        1: 10,
-        2: 20,
-        3: 30
-    };
+    const task = tasks[taskId];
+    const reward = task ? task.reward : 0;
     
-    const reward = rewards[taskId] || 0;
     balance += reward;
     balanceElement.textContent = balance;
     
@@ -95,12 +128,19 @@ function completeTask(taskId) {
     updateSecretsTab(); // Check if newly updated balance unlocks the terminal
 }
 
-// Interactive task handler linked from button clicks
-function handleTaskClick(taskId) {
+// Asynchronous button router to intercept interaction cleanly
+async function handleTaskClick(taskId) {
     const task = tasks[taskId];
-    if (task && task.complete()) {
+    if (!task) return;
+
+    // Await the custom styled terminal popup response smoothly
+    const userInput = await showCustomPrompt(task.message);
+    
+    // Evaluate input results using the clean popup framework
+    if (userInput !== null && task.validate(userInput)) {
         completeTask(taskId);
-    } else {
+        alert("Verification successful. Access granted.");
+    } else if (userInput !== null) {
         alert("Verification failed. Access Denied.");
     }
 }
@@ -146,7 +186,6 @@ function openTab(event, tabId) {
         gateContainer.className = 'gate-open';
     }, 700); 
 }
-
 
 // Load progress on page load
 window.onload = function () {
