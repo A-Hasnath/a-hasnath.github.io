@@ -207,7 +207,7 @@ input[type="text"]:focus {
 }
 
 /* ==========================================================================
-   5. Premium Industrial Blast Gates (Slam, Rebound, Slide & Fade)
+   5. Premium Industrial Blast Gates (Slam, Rebound & Swift Slide Retraction)
    ========================================================================== */
 
 #gate-container {
@@ -232,8 +232,7 @@ input[type="text"]:focus {
     box-sizing: border-box;
     box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    opacity: 0; /* Hidden by default until triggered */
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* Default hidden state */
 }
 
 .left-gate {
@@ -242,7 +241,7 @@ input[type="text"]:focus {
 
 .right-gate {
     right: 0;
-    transform: translateX(100%);
+    transform: translateX(100%); /* Default hidden state */
 }
 
 /* The neon laser beams where the straight gates lock together */
@@ -259,47 +258,46 @@ input[type="text"]:focus {
 .laser-edge-right { left: 0; }
 
 /* ==========================================================================
-   Complete Kinetic Animation Sequence (Slam -> Bounce -> Retract & Fade)
+   Complete Kinetic Animation Sequence (Slam -> Bounce -> Fast Retract)
    ========================================================================== */
 
-@keyframes slamReboundRetractLeft {
-    0% { transform: translateX(-100%); opacity: 0; }
-    10% { opacity: 1; }
+@keyframes slamReboundFastRetractLeft {
+    0% { transform: translateX(-100%); }
     /* 1. Slam shut into the center */
-    30% { transform: translateX(0); opacity: 1; }
+    30% { transform: translateX(0); }
     /* 2. Physical rebound recoil bounce */
-    40% { transform: translateX(-8px); opacity: 1; }
-    45% { transform: translateX(0); opacity: 1; }
+    40% { transform: translateX(-8px); }
+    45% { transform: translateX(0); }
     /* 3. Hold solid while the content swaps underneath */
-    65% { transform: translateX(0); opacity: 1; }
-    /* 4. Slide back to the side while fading out completely */
-    100% { transform: translateX(-100%); opacity: 0; }
+    70% { transform: translateX(0); }
+    /* 4. Swift, mechanical slide back to the original position */
+    100% { transform: translateX(-100%); }
 }
 
-@keyframes slamReboundRetractRight {
-    0% { transform: translateX(100%); opacity: 0; }
-    10% { opacity: 1; }
+@keyframes slamReboundFastRetractRight {
+    0% { transform: translateX(100%); }
     /* 1. Slam shut into the center */
-    30% { transform: translateX(0); opacity: 1; }
+    30% { transform: translateX(0); }
     /* 2. Physical rebound recoil bounce */
-    40% { transform: translateX(8px); opacity: 1; }
-    45% { transform: translateX(0); opacity: 1; }
+    40% { transform: translateX(8px); }
+    45% { transform: translateX(0); }
     /* 3. Hold solid while the content swaps underneath */
-    65% { transform: translateX(0); opacity: 1; }
-    /* 4. Slide back to the side while fading out completely */
-    100% { transform: translateX(100%); opacity: 0; }
+    70% { transform: translateX(0); }
+    /* 4. Swift, mechanical slide back to the original position */
+    100% { transform: translateX(100%); }
 }
 
 /* Triggered State: When JS adds 'gate-shut', run the full seamless sequence */
 #gate-container.gate-shut .left-gate {
-    animation: slamReboundRetractLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: slamReboundFastRetractLeft 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 #gate-container.gate-shut .right-gate {
-    animation: slamReboundRetractRight 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: slamReboundFastRetractRight 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Clean up state reset */
-#gate-container.gate-open .left-gate { transform: translateX(-100%); opacity: 0; }
-#gate-container.gate-open .right-gate { transform: translateX(100%); opacity: 0; }
+/* Reset state (for repeated clicks) */
+#gate-container.gate-open .left-gate { transform: translateX(-100%); }
+#gate-container.gate-open .right-gate { transform: translateX(100%); }
+
 
