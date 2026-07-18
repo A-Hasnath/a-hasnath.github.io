@@ -185,3 +185,39 @@ input[type="text"]:focus {
     background-color: #161622;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 204, 0.3);
 }
+
+/* Glitch Animation Keyframes */
+@keyframes tabGlitch {
+    0% {
+        transform: translate(0);
+        filter: hue-rotate(0deg) contrast(1);
+    }
+    20% {
+        transform: translate(-5px, 3px);
+        filter: hue-rotate(90deg) contrast(1.5);
+    }
+    40% {
+        transform: translate(5px, -3px);
+        filter: hue-rotate(180deg) brightness(1.5);
+        clip-path: inset(10% 0 30% 0); /* Simulates horizontal screen tearing */
+    }
+    60% {
+        transform: translate(-3px, -2px);
+        filter: hue-rotate(270deg) contrast(1.2);
+        clip-path: inset(40% 0 15% 0);
+    }
+    80% {
+        transform: translate(3px, 2px);
+        filter: hue-rotate(360deg) brightness(1);
+    }
+    100% {
+        transform: translate(0);
+        filter: hue-rotate(0deg) contrast(1);
+        clip-path: inset(0);
+    }
+}
+
+/* The glitch trigger class */
+.glitch-active {
+    animation: tabGlitch 0.25s steps(2) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
