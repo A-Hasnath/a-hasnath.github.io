@@ -4,34 +4,33 @@ let balance = 0;
 const rewardHistoryList = document.getElementById('reward-history-list');
 const balanceElement = document.getElementById('balance');
 
-// Define the tasks and their respective rewards
+// Updated to map your story-driven questions precisely
 const tasks = {
     1: {
-        description: "Solve 5 + 3",
-        reward: 10,  // Reward for this task
+        description: "Prove that you are the saintess",
+        reward: 10,
         complete: function () {
-            const answer = prompt("What is 5 + 3?");
-            return answer === '8';
+            const answer = prompt("Enter the hidden passcode of the order (Hint: saintess):");
+            return answer && answer.toLowerCase() === 'saintess';
         }
     },
     2: {
-        description: "Answer: What is the capital of France?",
-        reward: 15,  // Reward for this task
+        description: "How is your temper",
+        reward: 20,
         complete: function () {
-            const answer = prompt("What is the capital of France?");
-            return answer.toLowerCase() === 'paris';
+            const answer = prompt("Are you calm, angry, or volatile?");
+            return answer && answer.toLowerCase() === 'calm';
         }
     },
     3: {
-        description: "Complete a random task",
-        reward: Math.floor(Math.random() * 20) + 1,  // Random reward between 1 and 20
+        description: "Whats the age difference again",
+        reward: 30,
         complete: function () {
-            alert("You completed a random task!");
-            return true;
+            const answer = prompt("What is the secret difference variable? (Enter a number):");
+            return answer === '0'; 
         }
     }
 };
-
 
 // Load progress from localStorage when the app loads
 function loadProgress() {
@@ -47,12 +46,15 @@ function loadProgress() {
     // Load reward history if it exists
     if (savedHistory !== null) {
         const rewardHistory = JSON.parse(savedHistory);
+        rewardHistoryList.innerHTML = ''; // Clear fallback mockup HTML items
         rewardHistory.forEach(reward => {
             const rewardItem = document.createElement('li');
             rewardItem.textContent = reward;
             rewardHistoryList.appendChild(rewardItem);
         });
     }
+    // Update the locked terminal message based on current balance
+    updateSecretsTab();
 }
 
 // Save progress to localStorage
@@ -68,8 +70,9 @@ function clearProgress() {
     localStorage.removeItem('rewardHistory');
     balance = 0;
     balanceElement.textContent = balance;
-    rewardHistoryList.innerHTML = '';  // Clear reward history
-    alert('Progress cleared!');
+    rewardHistoryList.innerHTML = '';  
+    updateSecretsTab();
+    alert('Log entries successfully purged!');
 }
 
 // Task completion logic
@@ -83,30 +86,53 @@ function completeTask(taskId) {
     const reward = rewards[taskId] || 0;
     balance += reward;
     balanceElement.textContent = balance;
+    
     const rewardItem = document.createElement('li');
-    rewardItem.textContent = `Task ${taskId} completed. Reward: ${reward} coins`;
+    rewardItem.textContent = `Trial ${taskId} bypassed. +${reward} fragments gathered.`;
     rewardHistoryList.appendChild(rewardItem);
     
-    saveProgress(); // Save progress after completing a task
+    saveProgress(); 
+    updateSecretsTab(); // Check if newly updated balance unlocks the terminal
 }
 
-// Tab switching logic with Mechanical Blast Gate Transition
+// Interactive task handler linked from button clicks
+function handleTaskClick(taskId) {
+    const task = tasks[taskId];
+    if (task && task.complete()) {
+        completeTask(taskId);
+    } else {
+        alert("Verification failed. Access Denied.");
+    }
+}
+
+// Dynamic decryption logic for the Secrets tab
+function updateSecretsTab() {
+    const secretStatus = document.getElementById('secret-status');
+    if (!secretStatus) return;
+
+    if (balance >= 50) {
+        secretStatus.innerHTML = "<span style='color: #bc3a80; font-weight: bold;'>[ UNLOCKED TRANSMISSION ]</span><br><br>\"They know you unlocked the gates. Run.\"";
+    } else {
+        secretStatus.innerHTML = `[ TERMINAL LOCKED ]<br><br>Requires 50 fragments to decode data.<br>(Current: ${balance} / 50)`;
+    }
+}
+
+// Tab switching logic with Premium Clean Industrial Blast Gate Transition
 function openTab(event, tabId) {
     const gateContainer = document.getElementById('gate-container');
 
     // STEP 1: Slam the mechanical gates shut instantly
     gateContainer.className = 'gate-shut';
 
-    // Wait 150ms for gates to lock completely, then trigger the cracking flash
+    // Wait 150ms for gates to look shut, then swap active layouts underneath
     setTimeout(() => {
-        gateContainer.classList.add('gate-cracking');
-        
-        // STEP 2: Swap the actual tab layouts safely while hidden behind the gate walls
+        // Swap active tab layouts
         const tabs = document.querySelectorAll('.tab-content');
         tabs.forEach(tab => {
             tab.classList.remove('active-tab');
         });
 
+        // Swap active state on navbar links
         const tabLinks = document.querySelectorAll('.tab-link');
         tabLinks.forEach(link => {
             link.classList.remove('active');
@@ -117,7 +143,7 @@ function openTab(event, tabId) {
 
     }, 150);
 
-    // STEP 3: Shatter the connection and slide the heavy gates open sideways
+    // STEP 3: Slide the heavy doors open smoothly
     setTimeout(() => {
         gateContainer.className = 'gate-open';
     }, 450);
