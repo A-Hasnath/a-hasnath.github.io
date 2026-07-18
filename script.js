@@ -29,7 +29,7 @@ const tasks = {
         validate: function (answer) {
             return answer === '0'; 
         }
-    }
+    },
     4: {
         description: "Whats the blood again",
         reward: 20,
