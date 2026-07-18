@@ -186,9 +186,8 @@ input[type="text"]:focus {
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 204, 0.3);
 }
 
-
 /* ==========================================================================
-   Upgraded Straight-Edge Blast Gates
+   Premium Clean Industrial Blast Gates (No Shake, No Color Glitch)
    ========================================================================== */
 
 #gate-container {
@@ -203,7 +202,7 @@ input[type="text"]:focus {
     overflow: hidden;
 }
 
-/* Heavy structural panels using your exact plum color */
+/* Heavy metallic structural panels using your exact plum color */
 .gate-half {
     position: absolute;
     top: 0;
@@ -211,84 +210,61 @@ input[type="text"]:focus {
     height: 100vh;
     background-color: #642b53; /* Your target plum color */
     box-sizing: border-box;
-    /* Inset shadow gives it 3D metallic depth */
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6);
-    /* Heavy cinematic movement timing */
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Clean inner shadow to give it 3D metallic bevel edges */
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Smooth left door setup */
 .left-gate {
     left: 0;
     transform: translateX(-100%);
+    border-right: 3px solid #bc3a80; /* Clean, solid accent line */
 }
 
+/* Smooth right door setup */
 .right-gate {
     right: 0;
     transform: translateX(100%);
+    border-left: 3px solid #bc3a80; /* Clean, solid accent line */
 }
-
-/* The neon laser beams where the gates lock together */
-.laser-edge-left, .laser-edge-right {
-    position: absolute;
-    top: 0;
-    width: 6px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: 0 0 15px #bc3a80, 0 0 30px #00ffcc;
-}
-
-.laser-edge-left { right: 0; }
-.laser-edge-right { left: 0; }
 
 /* ==========================================================================
-   Aggressive Glitch & Electronic Surge Effects
+   Realistic Mechanical Impact Timing (No Shake / No Color Shifts)
    ========================================================================== */
 
-@keyframes heavySlamGlitch {
-    0% {
-        transform: translate(0) skewX(0deg);
-        filter: hue-rotate(0deg) contrast(1);
-    }
-    15% {
-        transform: translate(-10px, 4px) skewX(4deg);
-        filter: hue-rotate(90deg) contrast(1.8) saturate(2);
-    }
-    30% {
-        transform: translate(10px, -4px) skewX(-4deg);
-        filter: hue-rotate(180deg) brightness(1.6);
-    }
-    45% {
-        transform: translate(-5px, -2px) skewX(2deg);
-        filter: hue-rotate(270deg) contrast(1.4);
-    }
-    60% {
-        transform: translate(5px, 2px) skewX(-2deg);
-        filter: hue-rotate(360deg) brightness(1);
-    }
-    100% {
-        transform: translate(0) skewX(0deg);
-        filter: hue-rotate(0deg) contrast(1);
-    }
+/* Realistic slamming motion: accelerates fast, hits, and settles with a minor rebound bounce */
+@keyframes mechanicalSlamLeft {
+    0% { transform: translateX(-100%); }
+    70% { transform: translateX(0); }
+    85% { transform: translateX(-8px); } /* Subtle mechanical recoil bounce */
+    100% { transform: translateX(0); }
 }
 
-/* State: Slammed closed with screen-tear distortion */
+@keyframes mechanicalSlamRight {
+    0% { transform: translateX(100%); }
+    70% { transform: translateX(0); }
+    85% { transform: translateX(8px); } /* Subtle mechanical recoil bounce */
+    100% { transform: translateX(0); }
+}
+
+/* State: Slamming closed smoothly */
 #gate-container.gate-shut .left-gate {
-    transform: translateX(0);
-    animation: heavySlamGlitch 0.35s steps(4) forwards;
+    animation: mechanicalSlamLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 #gate-container.gate-shut .right-gate {
-    transform: translateX(0);
-    animation: heavySlamGlitch 0.35s steps(4) forwards;
+    animation: mechanicalSlamRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* State: Shatter open sideways */
+/* State: Smoothly sliding wide open sideways */
 #gate-container.gate-open .left-gate {
     transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
 #gate-container.gate-open .right-gate {
     transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
+
 
 
