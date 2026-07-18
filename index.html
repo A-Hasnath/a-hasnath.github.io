@@ -7,47 +7,68 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- The Master Gate Container -->
-<div id="gate-container" class="gate-hidden">
-  <div class="gate-half left-gate"></div>
-  <div class="gate-half right-gate"></div>
-  <!-- This element holds the cracking texture line -->
-  <div class="gate-crack"></div>
-</div>
+    <!-- Premium Clean Industrial Blast Gates -->
+    <div id="gate-container" class="gate-hidden">
+        <div class="gate-half left-gate">
+            <div class="laser-edge-left"></div>
+        </div>
+        <div class="gate-half right-gate">
+            <div class="laser-edge-right"></div>
+        </div>
+    </div>
+
+    <!-- Balance Display Header -->
+    <div style="padding: 15px; text-align: right; font-family: monospace; font-size: 1.1rem;">
+        <span>Memory Fragments: </span><strong id="balance" style="color: #bc3a80;">0</strong>
+    </div>
 
     <!-- Tab Content -->
     <div id="home" class="tab-content active-tab">
         <h2>Home</h2>
         <p>Welcome to the Saintess Web!</p>
         <h5>Hell no ... Are you really visiting this </h5>
-        <h1>you shouldn't</h1> <h6>They will find you</h6>
-   </div>
+        <h1 style="color: #bc3a80; text-transform: uppercase;">you shouldn't</h1> 
+        <h6>They will find you</h6>
+    </div>
 
-     <div id="tasks" class="tab-content">
+    <!-- Tasks Tab -->
+    <div id="tasks" class="tab-content">
         <h2>Tasks</h2>
-        <p>Select a task to complete and earn rewards!</p>
-        <button onclick="completeTask(Prove that you are the saintess)">Complete Task 1</button>
-        <button onclick="completeTask(How is your temper)">Complete Task 2</button>
-        <button onclick="completeTask(Whats the age difference again)">Complete Task 3</button>
+        <p>Select a trial to complete and recover fragments:</p>
+        <div id="dynamic-tasks-list">
+            <!-- Handled dynamically by JS or falls back here -->
+            <button class="task-btn" onclick="handleTaskClick(1)">Prove that you are the saintess</button>
+            <button class="task-btn" onclick="handleTaskClick(2)">How is your temper</button>
+            <button class="task-btn" onclick="handleTaskClick(3)">Whats the age difference again</button>
+        </div>
     </div>
     
-    <div id="refer" class="tab-content">
-        <h2>Refer</h2>
-        <p>Refer a friend to earn rewards! Share your referral link:</p>
-        <input type="text" value="https://cryptominingapp.com/referral123" readonly>
+    <!-- Records Tab (Replaced Refer) -->
+    <div id="records" class="tab-content">
+        <h2>Archive Records</h2>
+        <p>Your journey logs and synchronization logs:</p>
+        <ul id="reward-history-list" style="list-style-type: square; padding-left: 20px; font-family: monospace;"></ul>
+        <button id="clear-progress-btn" style="margin-top: 20px; background: #642b53; color: white; border: 1px solid #bc3a80; padding: 8px 12px; cursor: pointer;">
+            Purge All Data Logs
+        </button>
     </div>
 
-    <div id="wallet" class="tab-content">
-        <h2>Wallet</h2>
-        <p>Check your crypto wallet balance and transactions here.</p>
+    <!-- Secrets Tab (Replaced Wallet) -->
+    <div id="secrets" class="tab-content">
+        <h2>Locked Terminal</h2>
+        <p>Encrypted data files hidden deep within the Saintess Web.</p>
+        <div style="border: 1px dashed #bc3a80; padding: 20px; background: rgba(100, 43, 83, 0.1); font-family: monospace; text-align: center;">
+            <p id="secret-status">[ SYSTEM LOCKED ]</p>
+            <small style="color: #888;">Accumulate more fragments to unlock transmissions...</small>
+        </div>
     </div>
 
     <!-- Bottom Tab Navigation -->
     <div class="tab-bar">
         <button class="tab-link active" onclick="openTab(event, 'home')">Home</button>
-        <button class="tab-link" onclick="openTab(event, 'tasks')">Good Tasks</button>
-        <button class="tab-link" onclick="openTab(event, 'refer')">Refer</button>
-        <button class="tab-link" onclick="openTab(event, 'wallet')">Wallet</button>
+        <button class="tab-link" onclick="openTab(event, 'tasks')">Trials</button>
+        <button class="tab-link" onclick="openTab(event, 'records')">Records</button>
+        <button class="tab-link" onclick="openTab(event, 'secrets')">Secrets</button>
     </div>
 
     <script src="script.js"></script>
