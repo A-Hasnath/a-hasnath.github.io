@@ -90,31 +90,37 @@ function completeTask(taskId) {
     saveProgress(); // Save progress after completing a task
 }
 
-// Tab switching logic with Glitch Effect
+// Tab switching logic with Mechanical Blast Gate Transition
 function openTab(event, tabId) {
-    // 1. Trigger the screen glitch animation on the body
-    document.body.classList.add('glitch-active');
+    const gateContainer = document.getElementById('gate-container');
 
-    // 2. Hide all tab content
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.classList.remove('active-tab');
-    });
+    // STEP 1: Slam the mechanical gates shut instantly
+    gateContainer.className = 'gate-shut';
 
-    // 3. Remove active class from all tab links
-    const tabLinks = document.querySelectorAll('.tab-link');
-    tabLinks.forEach(link => {
-        link.classList.remove('active');
-    });
-
-    // 4. Show the selected tab and make its link active
-    document.getElementById(tabId).classList.add('active-tab');
-    event.currentTarget.classList.add('active');
-    
-    // 5. Clean up the class after the 0.6s animation completes (Changed from 250 to 600)
+    // Wait 150ms for gates to lock completely, then trigger the cracking flash
     setTimeout(() => {
-        document.body.classList.remove('glitch-active');
-    }, 600);
+        gateContainer.classList.add('gate-cracking');
+        
+        // STEP 2: Swap the actual tab layouts safely while hidden behind the gate walls
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.classList.remove('active-tab');
+        });
+
+        const tabLinks = document.querySelectorAll('.tab-link');
+        tabLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        document.getElementById(tabId).classList.add('active-tab');
+        event.currentTarget.classList.add('active');
+
+    }, 150);
+
+    // STEP 3: Shatter the connection and slide the heavy gates open sideways
+    setTimeout(() => {
+        gateContainer.className = 'gate-open';
+    }, 450);
 }
 
 // Load progress on page load
