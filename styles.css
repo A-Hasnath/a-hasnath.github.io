@@ -186,29 +186,35 @@ input[type="text"]:focus {
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 204, 0.3);
 }
 
-/* Glitch Animation Keyframes */
+/* Glitch Animation Keyframes - Slowed down and intensified */
 @keyframes tabGlitch {
     0% {
         transform: translate(0);
         filter: hue-rotate(0deg) contrast(1);
     }
-    20% {
-        transform: translate(-5px, 3px);
-        filter: hue-rotate(90deg) contrast(1.5);
+    15% {
+        transform: translate(-8px, 4px);
+        filter: hue-rotate(90deg) contrast(1.8);
+        clip-path: inset(15% 0 60% 0);
     }
-    40% {
-        transform: translate(5px, -3px);
-        filter: hue-rotate(180deg) brightness(1.5);
-        clip-path: inset(10% 0 30% 0); /* Simulates horizontal screen tearing */
+    30% {
+        transform: translate(8px, -4px);
+        filter: hue-rotate(180deg) brightness(1.8);
+        clip-path: inset(45% 0 20% 0); 
+    }
+    45% {
+        transform: translate(-5px, 6px);
+        filter: hue-rotate(270deg) contrast(1.4) saturate(2);
+        clip-path: inset(70% 0 5% 0);
     }
     60% {
-        transform: translate(-3px, -2px);
-        filter: hue-rotate(270deg) contrast(1.2);
-        clip-path: inset(40% 0 15% 0);
+        transform: translate(6px, -2px);
+        filter: hue-rotate(360deg) brightness(1.2);
+        clip-path: inset(5% 0 80% 0);
     }
-    80% {
-        transform: translate(3px, 2px);
-        filter: hue-rotate(360deg) brightness(1);
+    75% {
+        transform: translate(-2px, 3px);
+        filter: hue-rotate(120deg) contrast(1.6);
     }
     100% {
         transform: translate(0);
@@ -217,7 +223,7 @@ input[type="text"]:focus {
     }
 }
 
-/* The glitch trigger class */
+/* Updated trigger class: Changed to 0.6s and steps(4) */
 .glitch-active {
-    animation: tabGlitch 0.25s steps(2) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: tabGlitch 0.6s steps(4) cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
