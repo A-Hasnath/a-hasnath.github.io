@@ -110,11 +110,11 @@ function openTab(event, tabId) {
     // 4. Show the selected tab and make its link active
     document.getElementById(tabId).classList.add('active-tab');
     event.currentTarget.classList.add('active');
-
-    // 5. Clean up the class after the 0.25s animation completes
+    
+    // 5. Clean up the class after the 0.6s animation completes (Changed from 250 to 600)
     setTimeout(() => {
         document.body.classList.remove('glitch-active');
-    }, 250);
+    }, 600);
 }
 
 // Load progress on page load
