@@ -25,7 +25,7 @@ body {
     color: #fff;
     overflow: hidden; /* Keeps the application feeling self-contained */
     
-    /* OPTIONAL: Subtle tech matrix grid background */
+    /* Subtle tech matrix grid background */
     background-color: #0a0a0c; 
     background-image: 
         linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
@@ -33,13 +33,13 @@ body {
     background-size: 100% 4px, 6px 100%;
     animation: crt-flicker 0.15s infinite;
     
-    /* OPTIONAL: Forcing crisp pixel text rendering */
+    /* Forcing crisp pixel text rendering */
     -webkit-font-smoothing: none;
     -moz-osx-font-smoothing: none;
     text-rendering: crispEdges;
 }
 
-/* OPTIONAL EXTRA: Overlay moving scanline for an immersive terminal feel */
+/* Overlay moving scanline for an immersive terminal feel */
 body::before {
     content: " ";
     display: block;
@@ -60,11 +60,12 @@ body::before {
     padding: 24px;
     display: none;
     
-    /* OPTIONAL: Cyber tech container styling using your deep purple */
+    /* Cyber tech container styling using your deep purple */
     border: 1px solid #622A50;
     background: rgba(98, 42, 80, 0.03);
     box-shadow: inset 0 0 20px rgba(98, 42, 80, 0.15);
     margin: 20px 20px 80px 20px; /* Gives room around the content container */
+    overflow-y: auto; /* Ensures long content lists can scroll smoothly */
 }
 
 .active-tab {
@@ -78,6 +79,26 @@ body::before {
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+/* Task Buttons Custom Styling (Clean pixel layout inside container) */
+.task-btn {
+    font-family: 'Silkscreen', sans-serif;
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+    padding: 14px;
+    background: rgba(100, 43, 83, 0.2);
+    color: #fff;
+    border: 1px solid #bc3a80;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s steps(2);
+}
+
+.task-btn:hover {
+    background: rgba(188, 58, 128, 0.4);
+    box-shadow: 0 0 8px rgba(188, 58, 128, 0.5);
 }
 
 /* ==========================================================================
@@ -118,7 +139,7 @@ body::before {
     text-shadow: 0 0 8px rgba(255, 82, 185, 0.6);
 }
 
-/* OPTIONAL EXTRA: Matrix underline effect under active tab */
+/* Matrix underline effect under active tab */
 .tab-link.active::after {
     content: '';
     position: absolute;
@@ -155,7 +176,6 @@ body::before {
 
 .btn:hover {
     background-color: #bc3a80;
-    /* OPTIONAL EXTRA: High-contrast neon shadow on hover */
     box-shadow: 2px 2px 0px #00ffcc, 4px 4px 0px rgba(0,0,0,1);
     transform: translate(-2px, -2px);
 }
@@ -187,86 +207,90 @@ input[type="text"]:focus {
 }
 
 /* ==========================================================================
-   Blast Gate Transitions
+   5. Premium Clean Industrial Blast Gates (No Shake, No Color Glitch)
    ========================================================================== */
 
-/* The wrapper that sits completely on top of everything */
 #gate-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 10000; /* Keeps it above tabs, buttons, and text */
-    pointer-events: none; /* Allows clicks to pass through when hidden */
+    z-index: 10000;
+    pointer-events: none;
     display: flex;
+    overflow: hidden;
 }
 
-/* Base styling for both halves of the security gate */
+/* Heavy metallic structural panels using your target plum color */
 .gate-half {
+    position: absolute;
+    top: 0;
     width: 50vw;
     height: 100vh;
-    background-color: #121216;
-    border: 4px solid #622A50; /* Uses your signature deep purple */
+    background-color: #642b53; /* Pure plum color configuration */
     box-sizing: border-box;
-    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+    /* Clean inner shadow to give it 3D metallic depth edges */
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .left-gate {
+    left: 0;
     transform: translateX(-100%);
-    border-right: 2px dashed #bc3a80; /* Neon seam where they lock */
 }
 
 .right-gate {
+    right: 0;
     transform: translateX(100%);
-    border-left: 2px dashed #bc3a80;
 }
 
-/* The structural crack effect down the center */
-.gate-crack {
+/* The neon laser beams where the straight gates lock together */
+.laser-edge-left, .laser-edge-right {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
+    width: 4px;
     height: 100vh;
-    background: transparent;
-    pointer-events: none;
-    z-index: 10001;
+    background: #fff;
+    box-shadow: 0 0 10px #bc3a80, 0 0 20px #642b53;
 }
+
+.laser-edge-left { right: 0; }
+.laser-edge-right { left: 0; }
 
 /* ==========================================================================
-   Gate Animation States
+   Realistic Mechanical Impact Motion Elements
    ========================================================================== */
 
-/* State 1: When the gate slams shut instantly */
-#gate-container.gate-shut {
-    pointer-events: all; /* Blocks user inputs during transition */
+/* Accelerates fast, hits the center, and settles cleanly with a physical rebound bounce */
+@keyframes mechanicalSlamLeft {
+    0% { transform: translateX(-100%); }
+    70% { transform: translateX(0); }
+    85% { transform: translateX(-8px); } /* Mechanical bounce recoil */
+    100% { transform: translateX(0); }
 }
-#gate-container.gate-shut .left-gate,
+
+@keyframes mechanicalSlamRight {
+    0% { transform: translateX(100%); }
+    70% { transform: translateX(0); }
+    85% { transform: translateX(8px); } /* Mechanical bounce recoil */
+    100% { transform: translateX(0); }
+}
+
+/* Triggered State: Panels slam closed smoothly on horizontal alignment */
+#gate-container.gate-shut .left-gate {
+    animation: mechanicalSlamLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
 #gate-container.gate-shut .right-gate {
-    transform: translateX(0);
+    animation: mechanicalSlamRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* State 2: Trigger the energy crack down the center seam */
-@keyframes crackFlash {
-    0%, 100% { background: transparent; box-shadow: none; }
-    20%, 60% { background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 30px #622A50; }
-    40% { background: #fff; box-shadow: 0 0 25px #fff, 0 0 40px #bc3a80; }
-}
-
-#gate-container.gate-cracking .gate-crack {
-    animation: crackFlash 0.3s steps(3) forwards;
-}
-
-/* State 3: When the shattered gate slides wide open */
+/* Triggered State: Panels cleanly slide wide open away from each other */
 #gate-container.gate-open .left-gate {
     transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
 #gate-container.gate-open .right-gate {
     transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
 }
-
-
-
-
