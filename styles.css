@@ -300,34 +300,4 @@ input[type="text"]:focus {
 #gate-container.gate-open .left-gate { transform: translateX(-100%); }
 #gate-container.gate-open .right-gate { transform: translateX(100%); }
 
-/* Container for Adsterra Native Unit */
-.native-ad-wrapper {
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 12px;
-    background: rgba(18, 18, 24, 0.9);
-    border: 1px solid #622A50;
-    box-shadow: 0 0 10px rgba(188, 58, 128, 0.2);
-    border-radius: 4px;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-/* Cyberpunk Section Label */
-.native-ad-wrapper .ad-label {
-    display: block;
-    font-family: 'Silkscreen', sans-serif;
-    font-size: 0.65rem;
-    color: #ff52b9;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    opacity: 0.8;
-}
-
-/* Fix for injected native elements */
-#container-c736430674307fdca9ee10c95ca7e50e {
-    width: 100%;
-    overflow: hidden;
-}
 
