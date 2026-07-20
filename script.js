@@ -1,10 +1,11 @@
 // script.js
 
 let balance = 0;
+let completedTasks = []; // Track solved task IDs
 const rewardHistoryList = document.getElementById('reward-history-list');
 const balanceElement = document.getElementById('balance');
 
-// Reconfigured tasks architecture using custom strings & modal parameters
+// Task Configuration
 const tasks = {
     1: {
         description: "Prove that you are the saintess",
@@ -40,7 +41,7 @@ const tasks = {
     }
 };
 
-// Custom graphic dialog controller with live inline error display & shake feedback
+// Custom graphic dialog controller
 function showCustomPrompt(messageText, taskValidator) {
     return new Promise((resolve) => {
         const modal = document.getElementById('custom-prompt-modal');
@@ -51,7 +52,6 @@ function showCustomPrompt(messageText, taskValidator) {
         const submitBtn = document.getElementById('modal-submit-btn');
         const cancelBtn = document.getElementById('modal-cancel-btn');
 
-        // Reset display state and clear input field
         msgContainer.textContent = messageText;
         inputField.value = '';
         if (errorField) errorField.textContent = '';
@@ -59,19 +59,15 @@ function showCustomPrompt(messageText, taskValidator) {
         modal.style.display = 'flex';
         inputField.focus();
 
-        // Submit click / Enter key handler
         function handleSubmit() {
             const val = inputField.value;
             if (taskValidator(val)) {
-                // Correct answer! Close modal and pass success
                 cleanup();
                 resolve(true);
             } else {
-                // Incorrect answer: Show inline terminal error & shake the modal box
                 if (errorField) errorField.textContent = '[ ERROR: ACCESS DENIED ]';
                 inputField.style.borderColor = '#ff4444';
                 
-                // Kinetic shock impact feedback
                 if (modalBox) {
                     modalBox.style.transform = 'translateX(-6px)';
                     setTimeout(() => modalBox.style.transform = 'translateX(6px)', 50);
@@ -80,13 +76,11 @@ function showCustomPrompt(messageText, taskValidator) {
             }
         }
 
-        // Cancel / Abort click handler
         function handleCancel() {
             cleanup();
             resolve(false);
         }
 
-        // Allow pressing 'Enter' key inside the text field
         function handleKeyDown(e) {
             if (e.key === 'Enter') handleSubmit();
         }
@@ -104,28 +98,35 @@ function showCustomPrompt(messageText, taskValidator) {
     });
 }
 
-// Load progress from localStorage when the app loads
+// Load progress from localStorage
 function loadProgress() {
     const savedBalance = localStorage.getItem('balance');
     const savedHistory = localStorage.getItem('rewardHistory');
+    const savedCompleted = localStorage.getItem('completedTasks');
 
-    // Load balance if it exists
     if (savedBalance !== null) {
         balance = parseInt(savedBalance, 10);
         balanceElement.textContent = balance;
     }
 
-    // Load reward history if it exists
     if (savedHistory !== null) {
         const rewardHistory = JSON.parse(savedHistory);
-        rewardHistoryList.innerHTML = ''; // Clear fallback mockup HTML items
+        rewardHistoryList.innerHTML = '';
         rewardHistory.forEach(reward => {
             const rewardItem = document.createElement('li');
             rewardItem.textContent = reward;
             rewardHistoryList.appendChild(rewardItem);
         });
     }
-    // Update the locked terminal message based on current balance
+
+    // Restore completed buttons state
+    if (savedCompleted !== null) {
+        completedTasks = JSON.parse(savedCompleted);
+        completedTasks.forEach(taskId => {
+            disableTaskButton(taskId);
+        });
+    }
+
     updateSecretsTab();
 }
 
@@ -134,12 +135,40 @@ function saveProgress() {
     localStorage.setItem('balance', balance);
     const rewardHistoryItems = Array.from(rewardHistoryList.children).map(item => item.textContent);
     localStorage.setItem('rewardHistory', JSON.stringify(rewardHistoryItems));
+    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
 }
 
-// Function to clear progress
+// Helper function to lock button visually and functionally
+function disableTaskButton(taskId) {
+    const btn = document.getElementById(`task-btn-${taskId}`);
+    if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+        if (!btn.innerText.includes('[ BYPASSED ]')) {
+            btn.innerText += " [ BYPASSED ]";
+        }
+    }
+}
+
+// Clear all progress and unlock buttons back
 function clearProgress() {
     localStorage.removeItem('balance');
     localStorage.removeItem('rewardHistory');
+    localStorage.removeItem('completedTasks');
+    
+    // Reset completed tasks array & re-enable all task buttons
+    completedTasks.forEach(taskId => {
+        const btn = document.getElementById(`task-btn-${taskId}`);
+        if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.innerText = btn.innerText.replace(" [ BYPASSED ]", "");
+        }
+    });
+
+    completedTasks = [];
     balance = 0;
     balanceElement.textContent = balance;
     rewardHistoryList.innerHTML = '';  
@@ -159,16 +188,24 @@ function completeTask(taskId) {
     rewardItem.textContent = `Trial ${taskId} bypassed. +${reward} fragments gathered.`;
     rewardHistoryList.appendChild(rewardItem);
     
+    // Mark as completed and update button state
+    if (!completedTasks.includes(taskId)) {
+        completedTasks.push(taskId);
+    }
+    disableTaskButton(taskId);
+
     saveProgress(); 
-    updateSecretsTab(); // Check if newly updated balance unlocks the terminal
+    updateSecretsTab();
 }
 
-// Asynchronous button router to intercept interaction cleanly
+// Asynchronous button router
 async function handleTaskClick(taskId) {
+    // Prevent execution if already completed
+    if (completedTasks.includes(taskId)) return;
+
     const task = tasks[taskId];
     if (!task) return;
 
-    // Trigger the custom terminal popup with live inline error validation
     const passed = await showCustomPrompt(task.message, task.validate);
     
     if (passed) {
@@ -188,14 +225,12 @@ function updateSecretsTab() {
     }
 }
 
-// Tab switching logic with Premium Clean Industrial Blast Gate Transition
+// Tab switching logic
 function openTab(event, tabId) {
     const gateContainer = document.getElementById('gate-container');
 
-    // STEP 1: Trigger the full mechanical sequence
     gateContainer.className = 'gate-shut';
 
-    // Wait exactly 300ms for the gates to be fully closed, then swap active layouts underneath
     setTimeout(() => {
         const tabs = document.querySelectorAll('.tab-content');
         tabs.forEach(tab => {
@@ -210,9 +245,8 @@ function openTab(event, tabId) {
         document.getElementById(tabId).classList.add('active-tab');
         event.currentTarget.classList.add('active');
 
-    }, 300); // 300ms matches the "Hold solid" phase in the CSS
+    }, 300);
 
-    // STEP 3: Reset the gate classes after the 700ms animation completely finishes
     setTimeout(() => {
         gateContainer.className = 'gate-open';
     }, 700); 
