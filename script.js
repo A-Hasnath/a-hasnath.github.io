@@ -27,7 +27,7 @@ const tasks = {
         reward: 30,
         message: "What is the secret difference variable? (Enter a number):",
         validate: function (answer) {
-            return answer === '0'; 
+            return answer && answer.trim() === '0'; 
         }
     },
     4: {
@@ -35,46 +35,72 @@ const tasks = {
         reward: 20,
         message: "What is the liquid variable? (Enter group):",
         validate: function (answer) {
-            return answer === 'o'; 
+            return answer && answer.toLowerCase() === 'o'; 
         }
     }
 };
 
-
-// Custom graphic dialog controller using modern Promises
-function showCustomPrompt(messageText) {
+// Custom graphic dialog controller with live inline error display & shake feedback
+function showCustomPrompt(messageText, taskValidator) {
     return new Promise((resolve) => {
         const modal = document.getElementById('custom-prompt-modal');
+        const modalBox = document.getElementById('modal-box');
         const msgContainer = document.getElementById('modal-message');
         const inputField = document.getElementById('modal-input');
+        const errorField = document.getElementById('modal-error');
         const submitBtn = document.getElementById('modal-submit-btn');
         const cancelBtn = document.getElementById('modal-cancel-btn');
 
-        // Setup texts and reset fields
+        // Reset display state and clear input field
         msgContainer.textContent = messageText;
         inputField.value = '';
+        if (errorField) errorField.textContent = '';
+        inputField.style.borderColor = '#622A50';
         modal.style.display = 'flex';
         inputField.focus();
 
-        // Event scoping handlers
+        // Submit click / Enter key handler
         function handleSubmit() {
-            cleanup();
-            resolve(inputField.value);
+            const val = inputField.value;
+            if (taskValidator(val)) {
+                // Correct answer! Close modal and pass success
+                cleanup();
+                resolve(true);
+            } else {
+                // Incorrect answer: Show inline terminal error & shake the modal box
+                if (errorField) errorField.textContent = '[ ERROR: ACCESS DENIED ]';
+                inputField.style.borderColor = '#ff4444';
+                
+                // Kinetic shock impact feedback
+                if (modalBox) {
+                    modalBox.style.transform = 'translateX(-6px)';
+                    setTimeout(() => modalBox.style.transform = 'translateX(6px)', 50);
+                    setTimeout(() => modalBox.style.transform = 'translateX(0)', 100);
+                }
+            }
         }
 
+        // Cancel / Abort click handler
         function handleCancel() {
             cleanup();
-            resolve(null);
+            resolve(false);
+        }
+
+        // Allow pressing 'Enter' key inside the text field
+        function handleKeyDown(e) {
+            if (e.key === 'Enter') handleSubmit();
         }
 
         function cleanup() {
             modal.style.display = 'none';
             submitBtn.removeEventListener('click', handleSubmit);
             cancelBtn.removeEventListener('click', handleCancel);
+            inputField.removeEventListener('keydown', handleKeyDown);
         }
 
         submitBtn.addEventListener('click', handleSubmit);
         cancelBtn.addEventListener('click', handleCancel);
+        inputField.addEventListener('keydown', handleKeyDown);
     });
 }
 
@@ -142,15 +168,11 @@ async function handleTaskClick(taskId) {
     const task = tasks[taskId];
     if (!task) return;
 
-    // Await the custom styled terminal popup response smoothly
-    const userInput = await showCustomPrompt(task.message);
+    // Trigger the custom terminal popup with live inline error validation
+    const passed = await showCustomPrompt(task.message, task.validate);
     
-    // Evaluate input results using the clean popup framework
-    if (userInput !== null && task.validate(userInput)) {
+    if (passed) {
         completeTask(taskId);
-        alert("Verification successful. Access granted.");
-    } else if (userInput !== null) {
-        alert("Verification failed. Access Denied.");
     }
 }
 
