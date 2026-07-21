@@ -1,5 +1,3 @@
-// script.js
-
 let balance = 0;
 let completedTasks = []; // Track solved task IDs
 const rewardHistoryList = document.getElementById('reward-history-list');
@@ -32,12 +30,16 @@ const tasks = {
         }
     },
     4: {
-        description: "Whats the blood again",
+        description: "Whats the group again",
         reward: 20,
         message: "What is the liquid variable? (Enter group):",
         validate: function (answer) {
             return answer && answer.toLowerCase() === 'o'; 
         }
+    },
+    5: {
+        description: "Click to get reward",
+        reward: 10
     }
 };
 
@@ -205,6 +207,16 @@ async function handleTaskClick(taskId) {
 
     const task = tasks[taskId];
     if (!task) return;
+
+    // Handle Rewarded Popup Ad Task (ID: 5)
+    if (taskId === 5) {
+        show_11367293('pop').then(() => {
+            completeTask(5);
+        }).catch(e => {
+            console.error("Ad failed or closed prematurely:", e);
+        });
+        return;
+    }
 
     const passed = await showCustomPrompt(task.message, task.validate);
     
