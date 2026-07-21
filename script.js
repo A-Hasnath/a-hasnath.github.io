@@ -3,6 +3,10 @@ let completedTasks = []; // Track solved task IDs
 const rewardHistoryList = document.getElementById('reward-history-list');
 const balanceElement = document.getElementById('balance');
 
+// --- ADSGRAM INTEGRATION ---
+// Initialize Adsgram controller with your Block ID
+const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "int-39186" }) : null;
+
 // Task Configuration
 const tasks = {
     1: {
@@ -208,13 +212,22 @@ async function handleTaskClick(taskId) {
     const task = tasks[taskId];
     if (!task) return;
 
-    // Handle Rewarded Popup Ad Task (ID: 5)
+    // Adsgram Rewarded Task (Task ID 5)
     if (taskId === 5) {
-        show_11367293('pop').then(() => {
-            completeTask(5);
-        }).catch(e => {
-            console.error("Ad failed or closed prematurely:", e);
-        });
+        if (!AdController) {
+            alert("Ad controller failed to initialize. Make sure Adsgram script is loaded.");
+            return;
+        }
+
+        AdController.show()
+            .then((result) => {
+                // User watched ad to completion
+                completeTask(5);
+            })
+            .catch((result) => {
+                // User closed ad early or error occurred
+                console.error("Adsgram Error / Dismissed:", result);
+            });
         return;
     }
 
